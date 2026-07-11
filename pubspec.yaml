@@ -1,0 +1,31 @@
+name: fake_screen_maker
+description: "撮影・演劇用フェイク画面メーカー"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.6.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  uuid: ^4.5.1
+  image_picker: ^1.1.2
+  gal: ^2.3.0
+  path_provider: ^2.1.5
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  riverpod_lint: ^2.3.13
+  custom_lint: ^0.7.5
+
+flutter:
+  uses-material-design: true
