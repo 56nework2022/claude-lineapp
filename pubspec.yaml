@@ -26,6 +26,11 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   riverpod_lint: ^2.3.13
   custom_lint: ^0.7.5
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icon/app_icon.png"

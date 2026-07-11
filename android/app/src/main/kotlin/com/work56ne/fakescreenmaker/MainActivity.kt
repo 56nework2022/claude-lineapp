@@ -1,4 +1,4 @@
-package com.example.fake_screen_maker
+package com.work56ne.fakescreenmaker
 
 import io.flutter.embedding.android.FlutterActivity
 

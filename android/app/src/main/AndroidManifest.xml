@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
     <application
-        android:label="fake_screen_maker"
+        android:label="撮影用トーク画面メーカー"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
