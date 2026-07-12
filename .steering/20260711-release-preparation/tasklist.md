@@ -47,17 +47,17 @@
 
 ## Task 6: プライバシーポリシー作成・公開
 
-- [ ] `docs/privacy-policy.md` を作成（収集情報なし・写真ライブラリはローカル処理のみ・Hiveによる端末内保存の旨を明記）
-- [ ] GitHub Pagesを有効化（ユーザー承認のうえ）し、公開URLを確定
+- [x] `docs/privacy-policy.md` を作成（収集情報なし・写真ライブラリはローカル処理のみ・Hiveによる端末内保存の旨を明記）
+- [x] GitHub Pagesを有効化（ユーザー承認のうえリポジトリをPublicに変更しPages公開）し、公開URLを確定：`https://56nework2022.github.io/claude-lineapp/privacy-policy`
 
 ## Task 7: ストア掲載情報ドラフト作成
 
-- [ ] `store-listing-draft.md` を作成（アプリ名・簡単な説明・詳細な説明・コンテンツレーティング方針・データセーフティ回答方針・スクリーンショット撮影案）
+- [x] `store-listing-draft.md` を作成（アプリ名・簡単な説明・詳細な説明・コンテンツレーティング方針・データセーフティ回答方針・スクリーンショット撮影案）
 
 ## Task 8: 最終チェック・引き継ぎ
 
-- [ ] 受け入れ条件（`requirements.md` §4）を全項目確認
-- [ ] Play Console登録・審査提出はユーザー本人の作業として引き継ぎ事項をまとめる
+- [x] 受け入れ条件（`requirements.md` §4）を全項目確認 → 5/6完了、残る「実機動作確認」は未達（`requirements.md` §4参照）
+- [x] Play Console登録・審査提出はユーザー本人の作業として引き継ぎ事項をまとめる → `handoff.md` 作成済み
 
 ---
 
