@@ -8,6 +8,7 @@ class MessageList extends StatelessWidget {
     super.key,
     required this.messages,
     required this.characters,
+    required this.reorderMode,
     required this.onReorder,
     required this.onEdit,
     required this.onDelete,
@@ -15,6 +16,7 @@ class MessageList extends StatelessWidget {
 
   final List<Message> messages;
   final List<Character> characters;
+  final bool reorderMode;
   final void Function(int oldIndex, int newIndex) onReorder;
   final void Function(Message message) onEdit;
   final void Function(String id) onDelete;
@@ -31,21 +33,63 @@ class MessageList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (messages.isEmpty) {
       return const Center(
-        child: Text('メッセージがありません\n＋ ボタンから追加してください', textAlign: TextAlign.center),
+        child: Text(
+          'メッセージがありません\n＋ ボタンから追加してください',
+          textAlign: TextAlign.center,
+        ),
       );
     }
 
-    return ReorderableListView.builder(
+    if (reorderMode) {
+      return ReorderableListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        buildDefaultDragHandles: false,
+        itemCount: messages.length,
+        onReorder: onReorder,
+        itemBuilder: (context, index) {
+          final message = messages[index];
+          final character = _findCharacter(message.characterId);
+          if (character == null)
+            return const SizedBox.shrink(key: ValueKey('unknown'));
+
+          final prevSame =
+              index > 0 &&
+              messages[index - 1].characterId == message.characterId;
+
+          return Row(
+            key: ValueKey(message.id),
+            children: [
+              Expanded(
+                child: ChatBubbleWidget(
+                  message: message,
+                  character: character,
+                  showAvatar: !prevSame,
+                ),
+              ),
+              ReorderableDragStartListener(
+                index: index,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: Icon(Icons.drag_handle),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 8),
       itemCount: messages.length,
-      onReorder: onReorder,
       itemBuilder: (context, index) {
         final message = messages[index];
         final character = _findCharacter(message.characterId);
-        if (character == null) return const SizedBox.shrink(key: ValueKey('unknown'));
+        if (character == null)
+          return const SizedBox.shrink(key: ValueKey('unknown'));
 
-        final prevSame = index > 0 &&
-            messages[index - 1].characterId == message.characterId;
+        final prevSame =
+            index > 0 && messages[index - 1].characterId == message.characterId;
 
         return GestureDetector(
           key: ValueKey(message.id),

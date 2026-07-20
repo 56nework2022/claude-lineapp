@@ -24,6 +24,7 @@ class ChatEditorScreen extends ConsumerStatefulWidget {
 
 class _ChatEditorScreenState extends ConsumerState<ChatEditorScreen> {
   final _screenshotKey = GlobalKey();
+  bool _reorderMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,53 +38,60 @@ class _ChatEditorScreenState extends ConsumerState<ChatEditorScreen> {
         title: Text(scene.name),
         actions: [
           IconButton(
-            icon: const Icon(Icons.people_outline),
-            tooltip: '登場人物',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => CharacterEditorScreen(scene: scene),
+            icon: Icon(_reorderMode ? Icons.check : Icons.swap_vert),
+            tooltip: _reorderMode ? '並び替え完了' : '並び替え',
+            onPressed: () => setState(() => _reorderMode = !_reorderMode),
+          ),
+          if (!_reorderMode) ...[
+            IconButton(
+              icon: const Icon(Icons.people_outline),
+              tooltip: '登場人物',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CharacterEditorScreen(scene: scene),
+                ),
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.signal_cellular_alt),
-            tooltip: 'ステータスバー設定',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => StatusBarConfigScreen(scene: scene),
+            IconButton(
+              icon: const Icon(Icons.signal_cellular_alt),
+              tooltip: 'ステータスバー設定',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => StatusBarConfigScreen(scene: scene),
+                ),
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.fullscreen),
-            tooltip: 'フルスクリーン撮影',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => FullscreenViewScreen(scene: scene),
+            IconButton(
+              icon: const Icon(Icons.fullscreen),
+              tooltip: 'フルスクリーン撮影',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FullscreenViewScreen(scene: scene),
+                ),
               ),
             ),
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'lock') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LockScreenPreviewScreen(scene: scene),
-                  ),
-                );
-              } else if (value == 'export') {
-                ImageExporter.export(_screenshotKey, context);
-              }
-            },
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'lock', child: Text('通知プレビュー')),
-              PopupMenuItem(value: 'export', child: Text('画像を書き出す')),
-            ],
-          ),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'lock') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LockScreenPreviewScreen(scene: scene),
+                    ),
+                  );
+                } else if (value == 'export') {
+                  ImageExporter.export(_screenshotKey, context);
+                }
+              },
+              itemBuilder: (_) => const [
+                PopupMenuItem(value: 'lock', child: Text('通知プレビュー')),
+                PopupMenuItem(value: 'export', child: Text('画像を書き出す')),
+              ],
+            ),
+          ],
         ],
       ),
       body: Column(
@@ -97,6 +105,7 @@ class _ChatEditorScreenState extends ConsumerState<ChatEditorScreen> {
                 child: MessageList(
                   messages: messages,
                   characters: characters,
+                  reorderMode: _reorderMode,
                   onReorder: (oldIndex, newIndex) => ref
                       .read(messagesProvider(scene.id).notifier)
                       .reorder(oldIndex, newIndex),
@@ -106,13 +115,15 @@ class _ChatEditorScreenState extends ConsumerState<ChatEditorScreen> {
                     builder: (_) => MessageForm(
                       characters: characters,
                       editing: message,
-                      onSave: ({
-                        required characterId,
-                        required text,
-                        required displayTime,
-                        required isRead,
-                      }) =>
-                          ref.read(messagesProvider(scene.id).notifier).update(
+                      onSave:
+                          ({
+                            required characterId,
+                            required text,
+                            required displayTime,
+                            required isRead,
+                          }) => ref
+                              .read(messagesProvider(scene.id).notifier)
+                              .update(
                                 message.id,
                                 characterId: characterId,
                                 text: text,
@@ -129,29 +140,33 @@ class _ChatEditorScreenState extends ConsumerState<ChatEditorScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          builder: (_) => MessageForm(
-            characters: characters,
-            onSave: ({
-              required characterId,
-              required text,
-              required displayTime,
-              required isRead,
-            }) =>
-                ref.read(messagesProvider(scene.id).notifier).add(
-                      characterId: characterId,
-                      text: text,
-                      displayTime: displayTime,
-                      isRead: isRead,
-                    ),
-          ),
-        ),
-        icon: const Icon(Icons.add),
-        label: const Text('メッセージ追加'),
-      ),
+      floatingActionButton: _reorderMode
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => MessageForm(
+                  characters: characters,
+                  onSave:
+                      ({
+                        required characterId,
+                        required text,
+                        required displayTime,
+                        required isRead,
+                      }) => ref
+                          .read(messagesProvider(scene.id).notifier)
+                          .add(
+                            characterId: characterId,
+                            text: text,
+                            displayTime: displayTime,
+                            isRead: isRead,
+                          ),
+                ),
+              ),
+              icon: const Icon(Icons.add),
+              label: const Text('メッセージ追加'),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
